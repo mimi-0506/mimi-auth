@@ -1,16 +1,10 @@
-import { auth, provider, signInWithPopup } from "./firebase";
+import { signInWithRedirect } from "firebase/auth";
+import { auth, provider } from "./firebase";
 
 function App() {
   const handleLogin = async () => {
     try {
-      const result = await signInWithPopup(auth, provider);
-      const token = await result.user.getIdToken();
-      const redirectUrl = new URLSearchParams(window.location.search).get(
-        "redirect"
-      );
-      if (redirectUrl) {
-        window.location.href = `${redirectUrl}?token=${token}`;
-      }
+      signInWithRedirect(auth, provider);
     } catch (error) {
       console.error("Login failed:", error);
     }
