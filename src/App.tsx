@@ -1,25 +1,23 @@
-import { auth, provider, signInWithPopup } from "./firebase";
+import { signInWithPopup } from "firebase/auth";
+import { auth, provider } from "./firebase";
 
-function App() {
+export default function App() {
   const handleLogin = async () => {
     try {
       const result = await signInWithPopup(auth, provider);
       const token = await result.user.getIdToken();
-      if (window.opener) {
-        window.opener.postMessage({ token }, "*");
-        window.close();
-      }
-    } catch (error) {
-      console.error("Login failed:", error);
+      console.log("token", token);
+
+      window.location.href = `mimi://auth?token=${token}`;
+    } catch (e) {
+      console.error("Login failed:", e);
     }
   };
 
   return (
-    <div style={{ padding: "2rem", textAlign: "center" }}>
+    <div>
       <h1>mimi-auth</h1>
       <button onClick={handleLogin}>구글 로그인</button>
     </div>
   );
 }
-
-export default App;
