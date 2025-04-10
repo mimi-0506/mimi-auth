@@ -5,10 +5,10 @@ function App() {
     try {
       const result = await signInWithPopup(auth, provider);
       const token = await result.user.getIdToken();
-      const redirectUrl = new URLSearchParams(window.location.search).get(
-        "redirect"
-      );
-      if (redirectUrl) window.location.href = `mimi://auth?token=${token}`;
+      if (window.opener) {
+        window.opener.postMessage({ token }, "*");
+        window.close();
+      }
     } catch (error) {
       console.error("Login failed:", error);
     }
