@@ -1,14 +1,19 @@
-import { signInWithPopup } from "firebase/auth";
+import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { auth, provider } from "./firebase";
 
 export default function App() {
   const handleLogin = async () => {
     try {
       const result = await signInWithPopup(auth, provider);
-      const token = await result.user.getIdToken();
-      console.log("token", token);
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      const idToken = credential?.idToken;
 
-      window.location.href = `mimi://auth?token=${token}`;
+      if (!idToken) {
+        console.error("❌ Google ID Token을 가져올 수 없습니다.");
+        return;
+      }
+
+      window.location.href = `mimi://auth?token=${idToken}`;
     } catch (e) {
       console.error("Login failed:", e);
     }
